@@ -104,7 +104,10 @@ class Commands(commands.Cog,pycordSuperUtils.CogManager.Cog, name="Music"):
 
         if players:
             if await self.MusicManager.queue_add(players=players, ctx=ctx) and not await self.MusicManager.play(ctx):
-                await ctx.respond(f"Added {query} to queue")
+                if ctx_queue := await self.MusicManager.get_queue(ctx):
+                    pos = ctx_queue.queue[ctx_queue.pos -1]
+                    queembed = discord.Embed(description=f"Added {pos.title} to the queue", color=0xb16ad4)
+                    await ctx.respond(embed=queembed)
             else:
                 if player := await self.MusicManager.now_playing(ctx):
                     npembed = discord.Embed(description=f"Playing {player}", color=0xb16ad4)
